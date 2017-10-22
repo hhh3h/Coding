@@ -25,6 +25,8 @@ double morePi = 3.14159265358979323846;
 ```
 * 한 개의 문자 값에 대한 자료형은 char 를 이용한다.
 * int, long, double, float, boolean, char 등을 자바는 primitive 자료형 이라고 부른다. 이런 primitive 자료형은 new 키워드로 생성할 수 없다.
+* 자바는 class가 없이 사용할 수 없기에 함수는 없고 다 메쏘드이다. Python는 함수도 있고 메쏘드도 있다.
+* 클래스가 동시에 하나 이상의 클래스를 상속받는 것을 뜻한다. C++, 파이썬 등 많은 언어들이 다중 상속을 지원하지만 자바는 다중 상속을 지원하지 않는다. 
 ### substring
 * substring은 문자열 중 특정 부분을 뽑아낼 경우에 사용한다.
 ``` java
@@ -96,7 +98,106 @@ for(String number: numbers) {
 }
 ```
 ### 객체와 인스턴스
----
+```
 ※ 객체와 인스턴스
 클래스에 의해서 만들어진 객체를 인스턴스라고도 한다. 그렇다면 객체와 인스턴스의 차이는 무엇일까? 이렇게 생각 해 보자. Animal cat = new Animal() 이렇게 만들어진 cat은 객체이다. 그리고 cat이라는 객체는 Animal의 인스턴스(instance)이다. 즉 인스턴스라는 말은 특정 객체(cat)가 어떤 클래스(Animal)의 객체인지를 관계위주로 설명할 때 사용된다. 즉, "cat은 인스턴스" 보다는 "cat은 객체"라는 표현이 "cat은 Animal의 객체" 보다는 "cat은 Animal의 인스턴스" 라는 표현이 훨씬 잘 어울린다.
----
+과자틀 → 클래스 (Class), 과자틀에 의해서 만들어진 과자들 → 객체 (Object)
+```
+### Call by value
+``` java
+class Updator {
+    public void update(Counter counter) {
+        counter.count++;
+    }
+}
+
+public class Counter {
+    int count = 0;
+    public static void main(String[] args) {
+        Counter myCounter = new Counter();
+        System.out.println("before update:"+myCounter.count);
+        Updator myUpdator = new Updator();
+        myUpdator.update(myCounter);
+        System.out.println("after update:"+myCounter.count);
+    }
+}
+
+// before update:0
+// after update:1
+```
+### IS-A 관계
+* Dog클래스는 Animal클래스를 상속받았다. 즉 "Dog is a Animal" 과 같이 말할 수 있는 관계를 IS-A 관계라고 한다.
+```
+자바에서 만드는 모든 클래스는 Object라는 클래스를 상속받게 되어 있다. 사실 우리가 만든 Animal 클래스는 다음과 기능적으로 완전히 동일하다. 하지만 굳이 아래 코드처럼 Object 클래스를 상속하도록 코딩하지 않아도 자바에서 만들어지는 모든 클래스는 Object 클래스를 자동으로 상속받게끔 되어 있다.
+public class Animal extends Object {
+    String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+따라서 자바에서 만드는 모든 객체는 Object 자료형으로 사용할 수 있다. 즉, 다음과 같이 코딩하는 것이 가능하다.
+Object animal = new Animal();
+Object dog = new Dog();
+```
+### 메쏘드 오버라이딩 vs 메쏘드 오버로딩
+* 메쏘드 오버라이딩: 부모의 메쏘드를 변경
+* 메쏘드 오버로딩: 부모와 입력항목이 다른 경우 동일한 이름의 메소드를 만듬
+### 생성자(Constructor)
+* 클래스명과 동일하며 리턴타입을 정하지 않는다.
+``` java
+public class HouseDog extends Dog {
+    public HouseDog(String name) {
+        this.setName(name);
+    } 
+    ...
+```
+### 인터페이스
+* 현실세계의 usb와 동일하다.
+|물리적세계|자바세계|
+|컴퓨터|ZooKeeper|
+|USB 포트|Predator|
+|하드디스크, 디지털카메라,...|Tiger, Lion, Crocodile,...|
+### 다형성
+* 하나의 객체가 여러개의 자료형 타입을 가질 수 있는 것을 객체지향 세계에서는 다형성, 폴리모피즘(Polymorphism)이라고 부른다
+``` java
+public class Lion extends Animal implements Predator, Barkable {
+    public String getFood() {
+        return "banana";
+    }
+
+    public void bark() {
+        System.out.println("으르렁");
+    }
+}
+```
+```
+Tiger tiger = new Tiger();
+Animal animal = new Tiger();
+Predator predator = new Tiger();
+Barkable barkable = new Tiger();
+```
+### 추상클래스
+* 추상클래스에 abstract 로 선언된 메소드(getFood 메소드)는 인터페이스의 메소드와 마찬가지로 추상클래스를 상속하는 클래스에서 반드시 구현해야만 하는 메소드이다.
+### 스트림
+```
+스트림(Stream)이란?
+스트림을 가장 쉽게 이해하려면 수도꼭지를 생각하면 된다. 수도꼭지를 틀면 물이 나오고 수도꼭지를 잠그면 물이 나오지 않는다. A라는 곳에서부터 B라는 곳까지 수도관이 연결되어 있고 A에서 계속 물을 보낸다면 B에서 수도꼭지를 틀때마다 물이 나오게 될 것이다. 여기서 스트림은 A수도관에서 B수도관으로 이동하는 물의 흐름이라고 할 수 있다.
+프로그래밍에서는 다음과 같은 것들을 스트림이라고 할 수 있다.
+* 파일 데이터 (파일은 그 시작과 끝이 있는 데이터의 스트림이다.)
+* HTTP 응답 데이터 (브라우저가 요청하고 서버가 응답하는 HTTP 응답 데이터도 스트림이다.)
+* 키보드 입력 (사용자가 키보드로 입력하는 문자열은 스트림이다.)
+```
+### 접근제어자
+* private < default < protected < public 순으로 보다 많은 접근을 허용한다.
+#### private
+* private 이 붙은 변수, 메소드는 해당 클래스에서만 접근이 가능하다.
+#### default
+* 접근제어자를 별도로 설정하지 않는다면 접근제어자가 없는 변수, 메소드는 default 접근제어자가 되어 해당 패키지 내에서만 접근이 가능하다.
+#### protected
+*  protected가 붙은 변수, 메소드는 동일 패키지내의 클래스 또는 해당 클래스를 상속받은 외부 패키지의 클래스에서 접근이 가능하다.
+#### public
+* public 접근제어자가 붙은 변수, 메소드는 어떤 클래스에서라도 접근이 가능하다.
+### 정적변수(static)
+* static 키워드를 붙이면 자바는 메모리 할당을 딱 한번만 하게 되어 메모리 사용에 이점을 볼 수 있게된다.
+* static을 사용하는 또 한가지 이유로 공유의 개념을 들 수 있다. static 으로 설정하면 같은 곳의 메모리 주소만을 바라보기 때문에 static 변수의 값을 공유하게 되는 것이다. 다음의 예를 보면 더욱 명확하게 파악할 수 있을 것이다.
